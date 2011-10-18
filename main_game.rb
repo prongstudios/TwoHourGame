@@ -20,7 +20,7 @@ end
 class Egg
   def initialize(window, image, x, y)
     @image = image
-    @chirp = Gosu::Sample.new(window, "media/sounds/chirp.mp3")
+    @chirp = Gosu::Sample.new(window, "media/sounds/chirp.wav")
     @x, @y = x,y
     @unfound = true
   end
