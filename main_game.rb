@@ -169,7 +169,7 @@ class GameWindow < Gosu::Window
     poop = (0..12)
     poop.each do |pewpx|
       poop.each do |pewpy|
-        @background_image[1].draw(pewpx*100, pewpy*100, 0);
+        @background_image[2].draw(pewpx*100, pewpy*100, 0);
       end
     end
     if $found == 3
