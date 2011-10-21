@@ -1,7 +1,7 @@
 require "rubygems"
 require "gosu"
+require "./Timer.rb"
 
-require 'gosu'
 $found = 0
 
 
@@ -53,8 +53,10 @@ end
     
 
 class Player
+  attr_accessor :x, :y, :score
   def initialize(window, image)
     @image = image
+    @score = 60000
     @x = @y = @vel_x = @vel_y = @angle = 0.0
   end
   
@@ -71,8 +73,13 @@ class Player
   end
   
   def accelerate
-    @vel_x += Gosu::offset_x(@angle, 0.5)
-    @vel_y += Gosu::offset_y(@angle, 0.5)
+    @vel_x += Gosu::offset_x(@angle, 6.5)
+    @vel_y += Gosu::offset_y(@angle, 6.5)
+  end
+  
+  def deccelerate
+    @vel_x -= Gosu::offset_x(@angle, 3.5)
+    @vel_y -= Gosu::offset_y(@angle, 3.5)
   end
   
   def move
@@ -81,20 +88,12 @@ class Player
     @x %= 1000
     @y %= 1000
     
-    @vel_x *= 0.95
-    @vel_y *= 0.95
+    @vel_x *= 0.0
+    @vel_y *= 0.0
   end
   
   def draw
     @image.draw_rot(@x, @y, 2, @angle)
-  end
-  
-  def x
-    return @x
-  end
-  
-  def y
-    @y
   end
   
 end
@@ -103,9 +102,11 @@ class GameWindow < Gosu::Window
   def initialize
     super 1000, 1000, false
     self.caption = "Finding the chix"
+    @curtime = 0
     @characters = Gosu::Image.load_tiles(self, "media/characters.png", 100, 100, false)
     @background_image = Gosu::Image.load_tiles(self, "media/terrain.png", 100, 100, true)
     @obstacle_images = Gosu::Image.load_tiles(self, "media/obstacles.png", 100, 100, false)
+    @timer = Timer.new
     @font = Gosu::Font.new(self, "monospace", 50)
     @player = Player.new(self, @characters[1])
     @eggs = []
@@ -136,9 +137,16 @@ class GameWindow < Gosu::Window
     if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
       @player.accelerate
     end
+    if button_down? Gosu::KbDown
+      @player.deccelerate
+    end
     if button_down? Gosu::KbSpace then
+      starting = @found
       (0..2).each do |egg|
         @eggs[egg].try(@player.x, @player.y)
+      end
+      if @found == starting
+        @player.score -= 500
       end
     end
     
@@ -168,6 +176,12 @@ class GameWindow < Gosu::Window
       @font.draw("Congratulations! You've found all the chicks!", 50, 400, 20)
       
     end
+    if $found < 3 
+      @player.score -= 1000/60
+      @curtime = (60 - (@timer.passed).round) 
+    end
+
+    @font.draw("Time remaining: #{@curtime}                         Score: #{@player.score}", 0, 0, 16)
   end
   
   def button_down(id)
