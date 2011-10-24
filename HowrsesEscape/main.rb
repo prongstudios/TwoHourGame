@@ -1,0 +1,2 @@
+require 'gems'
+require 'gosu'
