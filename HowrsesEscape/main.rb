@@ -13,7 +13,14 @@ class GameWindow < Gosu::Window
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
     @howrse_tiles = Gosu::Image.load_tiles(self, "media/howrse.png", 200, 200, false)
     @font = Gosu::Font.new(self, "giddyup", 50)
-    @map = [[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]
+    @obstacles = []
+    @powerups = []
+    rand(12).times do
+      @obstacles.push(Obstacle.new(self, rand(12) * rand(10) * 200, Gosu::Image.load_tiles(self, "media/obstacles.png", 200, 200, false)))
+      @powerups.push(Powerup.new(self, rand(12) * rand(10) * 200, Gosu::Image.load_tiles(self, "media/powerup.png", 200, 200, false)))
+      
+    end
+    @map = [[1,1,2,1,1,1],[1,2,1,2,1,2]]
   end
   
   def update
@@ -30,7 +37,7 @@ class GameWindow < Gosu::Window
   
   def draw
     @font.draw("HOWRSE! ESCAPE!", 50, 400, 20)
-    @y_iterator = 0 + @y_offset
+    @y_iterator = 000 
     @x_iterator = 0
     @map.each do |row|
       if $debug
@@ -42,8 +49,8 @@ class GameWindow < Gosu::Window
           # puts tile 
           puts "#{@y_iterator} x #{@x_iterator}"
         end
-        if @y_iterator == 1000 + @y_offset
-          @y_iterator = 0 + @y_offset
+        if @y_iterator == 1000 
+          @y_iterator = 0 
         else
           @y_iterator += 200 
         end
@@ -54,18 +61,33 @@ class GameWindow < Gosu::Window
         @x_iterator += 200
       end
     end
+    
+    # @map.each do |row|
+    #   row.each do |tile|
+    #     @background_tiles[tile-1].draw(@x_iterator, @y_iterator,0)
+    #   end
+    #   if @x_iterator == 800
+    #     @x_iterator = 0 
+    #   else
+    #     @x_iterator += 200
+    #   end
+    # end
     @howrse.draw
     @wrangler.draw
-    @y_offset += 1
+    @obstacles.each do |obstacle|
+      obstacle.draw(10)
+    end
+    @powerups.each do |powerup|
+      powerup.draw(10)
+    end
+    @y_offset += 10
   end
   
   def button_down(id)
     if id == Gosu::KbEscape
       close
     end
-    if id == Gosu::KbSpace
-      @howrse.jumping = true
-    end
+
   end
 end
 
@@ -80,11 +102,12 @@ class Howrse
   end
   def draw
     if @jumping
-      @scale = 1.2
+      @howrse_tiles[1].draw(@x, @y, 2, 1.2, 1.2)
+      
     else
-      @scale = 1.0
+      @howrse_tiles[0].draw(@x, @y, 2)
+      
     end
-    @howrse_tiles[0].draw(@x, @y, 1, @scale, @scale)
     @jumping = false
   end
   def move_right
@@ -110,6 +133,36 @@ class Wrangler
     @wrangler_tiles[0].draw(@x, @y, 2)
   end
 end
+
+class Obstacle
+  attr_accessor :x, :y
+  def initialize(window, y_up ,tileset)
+    @image = tileset[rand(2)]
+    puts @image
+    @x = rand(1000)
+    @y = -200 - y_up
+  end
+  def draw(speed)
+    @y += speed
+    @image.draw(@x, @y, 1)
+  end
+end
+
+class Powerup
+  attr_accessor :x, :y
+  def initialize(window, y_up ,tileset)
+    @image = tileset[0]
+    @x = rand(1000)
+    @y = -200 - y_up
+  end
+  def draw(speed)
+    @y += speed
+    @image.draw(@x, @y, 1)
+  end
+end
+
+
+    
 
 if __FILE__ == $0
   window = GameWindow.new
