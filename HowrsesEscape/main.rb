@@ -14,13 +14,17 @@ class GameWindow < Gosu::Window
     self.caption = "The Howrses Escape"
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
     @howrse_tiles = Gosu::Image.load_tiles(self, "media/howrse.png", 200, 200, false)
+    @obstacle_tiles = Gosu::Image.load_tiles(self, "media/obstacles.png", 200, 200, false)
+    @powerup_tiles = Gosu::Image.load_tiles(self, "media/powerup.png", 200, 200, false)
     @font = Gosu::Font.new(self, "giddyup", 50)
     @obstacles = []
     @powerups = []
-    diggles = (1..(rand(126) + 12))
+    diggles = (1..(rand(126) + 120))
     diggles.each do |place|
-      @obstacles.push(Obstacle.new(self, place  * 200, Gosu::Image.load_tiles(self, "media/obstacles.png", 200, 200, false)))
-      @powerups.push(Powerup.new(self, place * 200, Gosu::Image.load_tiles(self, "media/powerup.png", 200, 200, false)))
+      @obstacles.push(Obstacle.new(self, place  * 200, @obstacle_tiles))
+      if place.even?
+        @powerups.push(Powerup.new(self, place * 200, @powerup_tiles))
+      end
       
     end
     @map = [[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1]]
