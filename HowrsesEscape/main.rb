@@ -2,9 +2,11 @@ require 'rubygems'
 require 'gosu'
 
 $debug = false
+$SCREEN_HEIGHT = 1200
+$SCREEN_WIDTH = 1000
 class GameWindow < Gosu::Window
   def initialize
-    super 1000, 1200, false
+    super $SCREEN_WIDTH, $SCREEN_HEIGHT, false
     @howrse = Howrse.new(self)
     @wrangler = Wrangler.new(self)
 
@@ -41,12 +43,12 @@ class GameWindow < Gosu::Window
     @x_iterator = 0
     @map.each do |row|
       if $debug
-        # puts row
+         puts row
       end
       row.each do |tile|
         @background_tiles[tile-1].draw(@x_iterator, @y_iterator,0)
         if $debug
-          # puts tile 
+          puts tile 
           puts "#{@y_iterator} x #{@x_iterator}"
         end
         if @y_iterator == 1000 
@@ -112,11 +114,15 @@ class Howrse
   end
   def move_right
     @x += 10
-    @x %= 1000  
+    if @x >= $SCREEN_WIDTH - 100
+      @x = $SCREEN_WIDTH - 100
+    end
   end
   def move_left
     @x -= 10
-    @x %= 1000
+    if @x <= -100
+      @x = -100
+    end
   end
 
     
@@ -138,7 +144,6 @@ class Obstacle
   attr_accessor :x, :y
   def initialize(window, y_up ,tileset)
     @image = tileset[rand(2)]
-    puts @image
     @x = rand(1000)
     @y = -200 - y_up
   end
@@ -157,7 +162,7 @@ class Powerup
   end
   def draw(speed)
     @y += speed
-    @image.draw(@x, @y, 1)
+    @image.draw(@x, @y, 1, 0.5, 0.5)
   end
 end
 
