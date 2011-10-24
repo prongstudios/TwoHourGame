@@ -9,7 +9,7 @@ class GameWindow < Gosu::Window
     super $SCREEN_WIDTH, $SCREEN_HEIGHT, false
     @howrse = Howrse.new(self)
     @wrangler = Wrangler.new(self)
-
+    @coyote = Coyote.new(self, 10)
     @y_offset = 1
     self.caption = "The Howrses Escape"
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
@@ -81,6 +81,7 @@ class GameWindow < Gosu::Window
     # end
     @howrse.draw
     @wrangler.draw
+    @coyote.draw(10, @howrse.y)
     @obstacles.each do |obstacle|
       obstacle.draw(10)
     end
@@ -171,7 +172,24 @@ class Powerup
   end
 end
 
-
+class Coyote 
+  attr_accessor :x, :y
+  def initialize(window, y_up)
+    @coyote_tiles = Gosu::Image.load_tiles(window, "media/coyote.png", 200, 200, false)
+    @x = 1000
+    @y = rand(1200)
+    
+  end
+  def draw(speed, howrse)
+    if howrse > @y
+      @y += speed * 0.5
+    elsif howrse < @y
+      @y -= speed * 0.5
+    end
+    @x -= 15
+    @coyote_tiles[0].draw(@x, @y, 1)
+  end
+end
     
 
 if __FILE__ == $0
