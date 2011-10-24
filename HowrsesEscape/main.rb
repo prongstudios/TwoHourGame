@@ -16,6 +16,18 @@ class GameWindow < Gosu::Window
     @map = [[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]
   end
   
+  def update
+    if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
+      @howrse.move_left
+    end
+    if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
+      @howrse.move_right
+    end
+    if button_down? Gosu::KbSpace then
+      @howrse.jumping = true
+    end
+  end
+  
   def draw
     @font.draw("HOWRSE! ESCAPE!", 50, 400, 20)
     @y_iterator = 0 + @y_offset
@@ -51,19 +63,40 @@ class GameWindow < Gosu::Window
     if id == Gosu::KbEscape
       close
     end
+    if id == Gosu::KbSpace
+      @howrse.jumping = true
+    end
   end
 end
 
 class Howrse
   attr_accessor :x, :y, :score
+  attr_writer :jumping
   def initialize(window)
     @howrse_tiles = Gosu::Image.load_tiles(window, "media/howrse.png", 200, 200, false)
     @x = 400
     @y = 600
+
   end
   def draw
-    @howrse_tiles[0].draw(@x, @y, 1)
+    if @jumping
+      @scale = 1.2
+    else
+      @scale = 1.0
+    end
+    @howrse_tiles[0].draw(@x, @y, 1, @scale, @scale)
+    @jumping = false
   end
+  def move_right
+    @x += 10
+    @x %= 1000  
+  end
+  def move_left
+    @x -= 10
+    @x %= 1000
+  end
+
+    
 end
 
 class Wrangler
