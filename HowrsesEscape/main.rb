@@ -11,18 +11,19 @@ class GameWindow < Gosu::Window
     @wrangler = Wrangler.new(self)
 
     @y_offset = 1
-    self.caption = "The Howses Escape"
+    self.caption = "The Howrses Escape"
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
     @howrse_tiles = Gosu::Image.load_tiles(self, "media/howrse.png", 200, 200, false)
     @font = Gosu::Font.new(self, "giddyup", 50)
     @obstacles = []
     @powerups = []
-    rand(12).times do
-      @obstacles.push(Obstacle.new(self, rand(12) * rand(10) * 200, Gosu::Image.load_tiles(self, "media/obstacles.png", 200, 200, false)))
-      @powerups.push(Powerup.new(self, rand(12) * rand(10) * 200, Gosu::Image.load_tiles(self, "media/powerup.png", 200, 200, false)))
+    diggles = (1..(rand(126) + 12))
+    diggles.each do |place|
+      @obstacles.push(Obstacle.new(self, place  * 200, Gosu::Image.load_tiles(self, "media/obstacles.png", 200, 200, false)))
+      @powerups.push(Powerup.new(self, place * 200, Gosu::Image.load_tiles(self, "media/powerup.png", 200, 200, false)))
       
     end
-    @map = [[1,1,2,1,1,1],[1,2,1,2,1,2]]
+    @map = [[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1]]
   end
   
   def update
