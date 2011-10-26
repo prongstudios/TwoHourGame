@@ -7,10 +7,12 @@ $SCREEN_WIDTH = 1000
 class GameWindow < Gosu::Window
   def initialize
     super $SCREEN_WIDTH, $SCREEN_HEIGHT, false
+    @map = [[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1]]
+    
     @howrse = Howrse.new(self)
     @wrangler = Wrangler.new(self)
     @coyote = Coyote.new(self, 10)
-    @y_offset = -1200
+    @y_offset = 0 - (@map.length * 100)
     self.caption = "The Howrses Escape"
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
     @howrse_tiles = Gosu::Image.load_tiles(self, "media/howrse.png", 200, 200, false)
@@ -27,7 +29,6 @@ class GameWindow < Gosu::Window
       end
       
     end
-    @map = [[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1]]
   end
   
   def update
