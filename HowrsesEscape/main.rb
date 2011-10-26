@@ -10,7 +10,7 @@ class GameWindow < Gosu::Window
     @howrse = Howrse.new(self)
     @wrangler = Wrangler.new(self)
     @coyote = Coyote.new(self, 10)
-    @y_offset = 1
+    @y_offset = -1200
     self.caption = "The Howrses Escape"
     @background_tiles = Gosu::Image.load_tiles(self, "media/background.png", 200, 200, true)
     @howrse_tiles = Gosu::Image.load_tiles(self, "media/howrse.png", 200, 200, false)
@@ -27,7 +27,7 @@ class GameWindow < Gosu::Window
       end
       
     end
-    @map = [[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1],[1,2,1,2,1,2],[1,1,2,1,1,1]]
+    @map = [[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,2,2,2,1],[2,2,2,2,2],[1,2,2,2,1],[1,1,2,1,1]]
   end
   
   def update
@@ -51,23 +51,26 @@ class GameWindow < Gosu::Window
          puts row
       end
       row.each do |tile|
-        @background_tiles[tile-1].draw(@x_iterator, @y_iterator,0)
         if $debug
           puts tile 
           puts "#{@y_iterator} x #{@x_iterator}"
         end
-        if @y_iterator == 1000 
-          @y_iterator = 0 
+        @background_tiles[tile-1].draw(@x_iterator, @y_iterator + @y_offset,0)
+        if @x_iterator == 800
+          @x_iterator = 0 
         else
-          @y_iterator += 200 
+          @x_iterator += 200
         end
       end
-      if @x_iterator == 800
-        @x_iterator = 0 
-      else
-        @x_iterator += 200
-      end
+
+      # if @y_iterator == 1000
+      #   @y_iterator = 0 
+      # else
+        @y_iterator += 200
+      # end
+      
     end
+    
     
     # @map.each do |row|
     #   row.each do |tile|
